@@ -1,5 +1,7 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany } from 'typeorm'
 import { ManyToOne, PrimaryColumn } from 'typeorm'
+import { Field, ID, Int, ObjectType } from 'type-graphql'
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany } from 'typeorm'
+
 import Fansub from './Fansub'
 import Genre from './Genre'
 import Season from './Season'
@@ -20,41 +22,53 @@ export interface IAnime {
 	originalCreator: StaffMember | undefined
 }
 @Entity('animes')
+@ObjectType()
 export default class Anime extends BaseEntity {
 	@PrimaryColumn()
+	@Field(() => ID)
 	id!: number
 
+	@Field()
 	@Column()
 	name!: string
 
+	@Field(() => Int)
 	@Column({ nullable: true })
 	episodes?: number
 
+	@Field(() => Int)
 	@Column({ nullable: true })
 	malId?: number
 
+	@Field()
 	@Column({ nullable: true })
 	synopsis?: string
 
+	@Field(() => [Genre], { nullable: true })
+	@JoinTable()
 	@ManyToMany(() => Genre, (genre) => genre.animes)
-	@JoinTable()
-	genres?: Genre[]
+	genres?: Promise<Genre[]>
 
+	@Field(() => [Fansub], { nullable: true })
+	@JoinTable()
 	@ManyToMany(() => Fansub, (fansub) => fansub.animes)
-	@JoinTable()
-	fansubs?: Fansub[]
+	fansubs?: Promise<Fansub[]>
 
+	@Field(() => Studio, { nullable: true })
 	@ManyToOne(() => Studio, (studio) => studio.animes)
-	studio?: Studio
+	studio?: Promise<Studio>
 
+	@Field(() => Season, { nullable: true })
 	@ManyToOne(() => Season, (season) => season.animes)
-	season?: Season
+	season?: Promise<Season>
 
 	@ManyToOne(() => StaffMember)
-	director?: StaffMember
+	@Field(() => StaffMember, { nullable: true })
+	director?: Promise<StaffMember>
 
 	@ManyToOne(() => StaffMember)
-	originalCreator?: StaffMember | null
+	@Field(() => StaffMember, { nullable: true })
+	originalCreator?: Promise<StaffMember>
 
 	constructor() {
 		super()
