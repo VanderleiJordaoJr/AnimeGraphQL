@@ -21,7 +21,15 @@ export default class FansubResolver {
 	}
 
 	@FieldResolver()
-	async animes(@Root() fansub: Fansub): Promise<Anime[] | undefined> {
-		return await fansub.animes
+	async animes(
+		@Root() fansub: Fansub,
+		@Args(() => PaginationArgs) { skip, take }: PaginationArgs
+	): Promise<Anime[] | undefined> {
+		return await Anime.createQueryBuilder('anime')
+			.leftJoinAndSelect('anime.fansubs', 'fansub')
+			.where('fansub.id = :id', { id: fansub.id })
+			.skip(skip)
+			.take(take)
+			.getMany()
 	}
 }

@@ -18,7 +18,7 @@ export class PaginationArgs {
 	@Field(() => Int)
 	@Min(1)
 	@Max(50)
-	take = 25
+	take = 10
 }
 
 export default function getSchema(): Promise<GraphQLSchema> {

@@ -21,7 +21,15 @@ export default class GenreResolver {
 	}
 
 	@FieldResolver()
-	async animes(@Root() genre: Genre): Promise<Anime[] | undefined> {
-		return await genre.animes
+	async animes(
+		@Root() genre: Genre,
+		@Args(() => PaginationArgs) { skip, take }: PaginationArgs
+	): Promise<Anime[] | undefined> {
+		return await Anime.createQueryBuilder('anime')
+			.leftJoinAndSelect('anime.genres', 'genre')
+			.where('genre.id = :id', { id: genre.id })
+			.skip(skip)
+			.take(take)
+			.getMany()
 	}
 }

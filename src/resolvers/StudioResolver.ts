@@ -21,7 +21,14 @@ export default class StudioResolver {
 	}
 
 	@FieldResolver()
-	async animes(@Root() studio: Studio): Promise<Anime[] | undefined> {
-		return await studio.animes
+	async animes(
+		@Root() studio: Studio,
+		@Args(() => PaginationArgs) { skip, take }: PaginationArgs
+	): Promise<Anime[] | undefined> {
+		return await Anime.createQueryBuilder('anime')
+			.where('anime.studioId = :id', { id: studio.id })
+			.skip(skip)
+			.take(take)
+			.getMany()
 	}
 }

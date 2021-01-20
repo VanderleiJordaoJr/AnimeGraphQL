@@ -21,9 +21,15 @@ export default class StaffResolver {
 	}
 
 	@FieldResolver()
-	async animes(@Root() staff: Staff): Promise<Anime[] | undefined> {
-		const animes = await staff.directorAnimes
-		animes.push(...(await staff.creatorAnimes))
-		return animes
+	async animes(
+		@Root() staff: Staff,
+		@Args(() => PaginationArgs) { skip, take }: PaginationArgs
+	): Promise<Anime[] | undefined> {
+		return await Anime.createQueryBuilder('anime')
+			.where('anime.directorId = :id', { id: staff.id })
+			.orWhere('anime.originalCreatorId = :id', { id: staff.id })
+			.skip(skip)
+			.take(take)
+			.getMany()
 	}
 }

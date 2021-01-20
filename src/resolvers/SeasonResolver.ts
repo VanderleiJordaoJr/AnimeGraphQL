@@ -21,7 +21,14 @@ export default class SeasonResolver {
 	}
 
 	@FieldResolver()
-	async animes(@Root() season: Season): Promise<Anime[] | undefined> {
-		return await season.animes
+	async animes(
+		@Root() season: Season,
+		@Args(() => PaginationArgs) { skip, take }: PaginationArgs
+	): Promise<Anime[] | undefined> {
+		return await Anime.createQueryBuilder('anime')
+			.where('anime.seasonId = :id', { id: season.id })
+			.skip(skip)
+			.take(take)
+			.getMany()
 	}
 }
