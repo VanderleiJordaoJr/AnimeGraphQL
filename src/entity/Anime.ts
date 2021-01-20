@@ -5,7 +5,7 @@ import { BaseEntity, Column, Entity, JoinTable, ManyToMany } from 'typeorm'
 import Fansub from './Fansub'
 import Genre from './Genre'
 import Season from './Season'
-import StaffMember from './StaffMember'
+import StaffMember from './Staff'
 import Studio from './Studio'
 
 export interface IAnime {
@@ -62,12 +62,12 @@ export default class Anime extends BaseEntity {
 	@ManyToOne(() => Season, (season) => season.animes)
 	season?: Promise<Season>
 
-	@ManyToOne(() => StaffMember)
 	@Field(() => StaffMember, { nullable: true })
+	@ManyToOne(() => StaffMember, (staff) => staff.directorAnimes)
 	director?: Promise<StaffMember>
 
-	@ManyToOne(() => StaffMember)
 	@Field(() => StaffMember, { nullable: true })
+	@ManyToOne(() => StaffMember, (staff) => staff.creatorAnimes)
 	originalCreator?: Promise<StaffMember>
 
 	constructor() {
