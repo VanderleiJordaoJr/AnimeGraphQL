@@ -1,2 +1,6 @@
 # AnimeGraphQL
-GraphQL API builed with Typescript, TypeORM and TypeGraphQL. Uses the data gathered with InfoAnimeWebScraper
+GraphQL Api, builded with Typescript, TypeORM and TypeGraphQL.
+There's a GraphQL playground at `/altair`.
+
+1. `yarn`
+2. `yarn start`
